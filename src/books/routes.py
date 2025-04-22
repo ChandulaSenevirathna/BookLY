@@ -1,9 +1,8 @@
 from fastapi import APIRouter, status
 from fastapi.exceptions import HTTPException
 from typing import List
-from BOOKLY.src.books.book_data import books
-from BOOKLY.src.books import schemas
-
+from src.books import schemas
+from src.books.book_data import books
 
 book_router = APIRouter()
 
