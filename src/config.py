@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 
+
 class Settings(BaseSettings):
     DATABASE_URL: str
     
@@ -9,5 +10,5 @@ class Settings(BaseSettings):
         extra="ignore",
     ) 
     
-settings = Settings()
-print(settings.DATABASE_URL)
+config = Settings()
+print(config.DATABASE_URL)
