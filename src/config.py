@@ -11,4 +11,3 @@ class Settings(BaseSettings):
     ) 
     
 config = Settings()
-print(config.DATABASE_URL)
