@@ -16,7 +16,12 @@ class BookService:
         return result.scalar_one_or_none()
     
     async def create_book(self, book_data: BookCreateModel, session: AsyncSession):
-        pass
+        book_data_dict = book_data.model_dump()
+        new_book = Book(**book_data_dict)
+        session.add(new_book)
+        await session.commit()
+        await session.refresh(new_book)
+        return new_book
     
     async def update_book(self, update_data: BookUpdateModel, session: AsyncSession):
         pass
