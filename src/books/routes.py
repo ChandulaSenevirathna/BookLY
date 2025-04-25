@@ -17,14 +17,14 @@ async def get_books(session: AsyncSession = Depends(get_session)):
     books = await book_service.get_all_books(session)
     return books
 
-@book_router.post("", status_code=status.HTTP_201_CREATED)
+@book_router.post("", status_code=status.HTTP_201_CREATED, response_model=schemas.Book)
 async def create_a_book(book_data: schemas.Book, session: AsyncSession = Depends(get_session)):
     
     new_book_data = book_data.model_dump()
     new_book = await book_service.create_book(new_book_data, session)
     return new_book
 
-@book_router.get("/{book_id}", status_code=status.HTTP_200_OK)
+@book_router.get("/{book_uid}", status_code=status.HTTP_200_OK)
 async def get_book(book_uid: int, session: AsyncSession = Depends(get_session)):
     
     book = await book_service.get_book(book_uid, session)
@@ -45,7 +45,7 @@ async def get_book(book_uid: int, session: AsyncSession = Depends(get_session)):
 #                 }
 #     raise HTTPException(status_code=404, detail="Book not found")
 
-@book_router.patch("/{book_id}")
+@book_router.patch("/{book_uid}")
 async def update_book(book_uid: int, book_data: schemas.BookUpdateModel, session: AsyncSession = Depends(get_session)):
  
     updated_book = await book_service.update_book(book_uid, book_data, session)
@@ -57,13 +57,15 @@ async def update_book(book_uid: int, book_data: schemas.BookUpdateModel, session
     raise HTTPException(status_code=404, detail="Book not found")
 
 
-@book_router.delete("/{book_id}", status_code=status.HTTP_200_OK)
-async def delete_book(book_id: int):
-    for book in books:
-        if book["id"] == book_id:
-            books.remove(book)
-            return {
-                "status": "success",
-                "record": book
-                }
-    raise HTTPException(status_code=404, detail="Book not found")
+@book_router.delete("/{book_uid}", status_code=status.HTTP_200_OK)
+async def delete_book(book_uid: int, session: AsyncSession = Depends(get_session)):
+    
+    deleted_book = await book_service.delete_book(book_uid, session)
+    
+    if deleted_book:
+        return {
+            "status": "success",
+            "message": "Book deleted successfully"
+        }
+    else:
+        raise HTTPException(status_code=404, detail="Book not found")
