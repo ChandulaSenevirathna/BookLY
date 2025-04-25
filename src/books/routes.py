@@ -18,10 +18,10 @@ async def get_books(session: AsyncSession = Depends(get_session)):
     return books
 
 @book_router.post("", status_code=status.HTTP_201_CREATED, response_model=schemas.Book)
-async def create_a_book(book_data: schemas.Book, session: AsyncSession = Depends(get_session)):
+async def create_a_book(book_data: schemas.BookCreateModel, session: AsyncSession = Depends(get_session)):
     
-    new_book_data = book_data.model_dump()
-    new_book = await book_service.create_book(new_book_data, session)
+    # new_book_data = book_data.model_dump()
+    new_book = await book_service.create_book(book_data, session)
     return new_book
 
 @book_router.get("/{book_uid}", status_code=status.HTTP_200_OK)
