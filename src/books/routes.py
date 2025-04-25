@@ -46,11 +46,16 @@ async def get_book(book_uid: int, session: AsyncSession = Depends(get_session)):
 #     raise HTTPException(status_code=404, detail="Book not found")
 
 @book_router.patch("/{book_id}")
-async def update_book(book_id: int, book_data: schemas.BookUpdateModelV1):
-    
-    
-    
+async def update_book(book_uid: int, book_data: schemas.BookUpdateModel, session: AsyncSession = Depends(get_session)):
+ 
+    updated_book = await book_service.update_book(book_uid, book_data, session)
+    if updated_book:
+        return {
+            "status": "success",
+            "record": updated_book
+        }
     raise HTTPException(status_code=404, detail="Book not found")
+
 
 @book_router.delete("/{book_id}", status_code=status.HTTP_200_OK)
 async def delete_book(book_id: int):
