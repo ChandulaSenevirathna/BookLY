@@ -13,7 +13,11 @@ class BookService:
     async def get_book(self, book_uid: str, session: AsyncSession):
         statement = select(Book).where(Book.uid == book_uid)
         result = await session.execute(statement)
-        return result.first()
+        book = result.first()
+        
+        if book is not None:
+            return book
+        return None
     
     async def create_book(self, book_data: BookCreateModel, session: AsyncSession):
         book_data_dict = book_data.model_dump()
@@ -25,15 +29,26 @@ class BookService:
     
     async def update_book(self, update_data: BookUpdateModel, session: AsyncSession):
         
-        book_to_update = await self.get_book(update_data.uid, session)
+        book_to_update = self.get_book(update_data.uid, session)
         
-        update_data_dict = update_data.model_dump()
-        
-        for key, value in update_data_dict.items():
-            setattr(book_to_update, key, value)
-        await session.commit()
-        await session.refresh(book_to_update)
-        return book_to_update
+        if book_to_update is not None:
+            
+            update_data_dict = update_data.model_dump()
+            
+            for key, value in update_data_dict.items():
+                setattr(book_to_update, key, value)
+            await session.commit()
+            await session.refresh(book_to_update)
+            return book_to_update
+        else:
+            return None
     
-    async def delete_book(self, book_data: BookCreateModel, session: AsyncSession):
-        pass
+    async def delete_book(self, book_uid: str, session: AsyncSession):
+        
+        book_to_delete = await self.get_book(book_uid, session)
+        
+        if book_to_delete is not None:
+            await session.delete(book_to_delete)
+            await session.commit()
+            return True
+        return None
