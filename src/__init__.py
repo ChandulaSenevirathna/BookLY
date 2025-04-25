@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from .books.routes import book_router
 from contextlib import asynccontextmanager
-from src.db.main import init_db
+from src.db.main import init_db, test_db_connection
 
 @asynccontextmanager
 async def life_span(app:FastAPI):
     print("server is starting")
-    await init_db()
+    await test_db_connection() 
+    await init_db() 
     yield
     print("server stopped")
 
@@ -22,3 +23,4 @@ app = FastAPI(
 
 
 app.include_router(book_router, prefix=f"/api/{version}/books", tags=["books"])
+

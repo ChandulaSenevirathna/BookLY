@@ -3,7 +3,7 @@ from fastapi.exceptions import HTTPException
 from typing import List
 from src.books import schemas, service
 from src.db.main import get_session
-from sqlmodel.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 
