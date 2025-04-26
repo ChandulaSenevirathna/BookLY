@@ -25,7 +25,7 @@ async def create_a_book(book_data: schemas.BookCreateModel, session: AsyncSessio
     return new_book
 
 @book_router.get("/{book_uid}", status_code=status.HTTP_200_OK)
-async def get_book(book_uid: int, session: AsyncSession = Depends(get_session)):
+async def get_book(book_uid: str, session: AsyncSession = Depends(get_session)):
     
     book = await book_service.get_book(book_uid, session)
     
@@ -46,7 +46,7 @@ async def get_book(book_uid: int, session: AsyncSession = Depends(get_session)):
 #     raise HTTPException(status_code=404, detail="Book not found")
 
 @book_router.patch("/{book_uid}")
-async def update_book(book_uid: int, book_data: schemas.BookUpdateModel, session: AsyncSession = Depends(get_session)):
+async def update_book(book_uid: str, book_data: schemas.BookUpdateModel, session: AsyncSession = Depends(get_session)):
  
     updated_book = await book_service.update_book(book_uid, book_data, session)
     if updated_book:

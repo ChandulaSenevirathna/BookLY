@@ -9,12 +9,13 @@ class BookService:
     async def get_all_books(self, session: AsyncSession):
         statement = select(Book).order_by(desc(Book.created_at))
         result = await session.execute(statement)
-        return result.all()
+        books = result.scalars().all()
+        return books
     
     async def get_book(self, book_uid: str, session: AsyncSession):
         statement = select(Book).where(Book.uid == book_uid)
         result = await session.execute(statement)
-        book = result.first()
+        book = result.scalars().first()
         
         if book is not None:
             return book
