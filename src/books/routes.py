@@ -24,7 +24,7 @@ async def create_a_book(book_data: schemas.BookCreateModel, session: AsyncSessio
     new_book = await book_service.create_book(book_data, session)
     return new_book
 
-@book_router.get("/{book_uid}", status_code=status.HTTP_200_OK)
+@book_router.get("/{book_uid}", response_model=schemas.Book, status_code=status.HTTP_200_OK)
 async def get_book(book_uid: str, session: AsyncSession = Depends(get_session)):
     
     book = await book_service.get_book(book_uid, session)
