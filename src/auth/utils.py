@@ -1,0 +1,18 @@
+from passlib.context import CryptContext
+
+password_context = CryptContext(
+    schemes=['bcrypt']
+)
+
+def generate_password_hash(password: str):
+    """
+    Hash a password using bcrypt.
+    """
+    return password_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str):
+    """
+    Verify a plain password against a hashed password.
+    """
+    return password_context.verify(plain_password, hashed_password)
+    
