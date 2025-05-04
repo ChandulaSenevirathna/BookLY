@@ -20,17 +20,20 @@ def verify_password(plain_password: str, hashed_password: str):
     """
     return password_context.verify(plain_password, hashed_password)
 
-def create_access_token(user_data: dict, expiry_time: timedelta):
+def create_access_token(user_data: dict, expiry_time: timedelta = None):
     """
     Create an access token for the user.
     """
     
-    Payload = {}
+    payload = {}
+    
+    payload['user_data'] = user_data
+    payload['exp'] = datetime.now() + expiry_time
     
     token = jwt.encode(
-        payload = Payload,
-        key = config.JWT_SECRET_KEY,
-        algorithm = config.JWT_ALGORITHM,
+        payload=payload,
+        key=config.JWT_SECRET_KEY,
+        algorithm=config.JWT_ALGORITHM,
     )
     
     return token
