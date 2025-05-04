@@ -8,6 +8,8 @@ password_context = CryptContext(
     schemes=['bcrypt']
 )
 
+ACCESS_TOKEN_EXPIRY = 3600
+
 def generate_password_hash(password: str):
     """
     Hash a password using bcrypt.
@@ -28,7 +30,7 @@ def create_access_token(user_data: dict, expiry_time: timedelta = None):
     payload = {}
     
     payload['user_data'] = user_data
-    payload['exp'] = datetime.now() + expiry_time
+    payload['exp'] = datetime.now() + expiry_time if expiry_time is not None else datetime.now() + timedelta(seconds=ACCESS_TOKEN_EXPIRY)
     
     token = jwt.encode(
         payload=payload,
