@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException,status
 from src.auth.schemas import UserCreateModel, UserModel
 from src.auth.service import UserService
 from src.db.main import get_session
+from src.auth. utils import create_access_token, decode_token
+
 
 auth_router = APIRouter()
 user_service = UserService()
