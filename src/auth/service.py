@@ -1,7 +1,7 @@
 from flask import session
 from src.auth.models import User
 from src.auth import schemas, utils
-from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
 class UserService:
@@ -12,12 +12,13 @@ class UserService:
         result = await session.execute(statement)
         user = result.scalars().first()
         return user
+
     
-    async def user_exists(self, email: str, session: AsyncSession):
-        """Check if user exists by email"""
+    async def get_user_by_email(self, email: str, session: AsyncSession):
+        """get user  by email"""
         user = await self.get_user(email, session)
         if user is not None:
-            return True
+            return user
         else:
             return False 
         
@@ -35,3 +36,4 @@ class UserService:
         await session.commit()
         
         return new_user
+
