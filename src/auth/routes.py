@@ -4,8 +4,8 @@ from src.auth.schemas import UserCreateModel, UserModel, UserLoginModel
 from src.auth.service import UserService
 from src.db.main import get_session
 from src.auth import utils
-
-
+from datetime import timedelta
+ 
 auth_router = APIRouter()
 user_service = UserService()
 
@@ -36,9 +36,27 @@ async def login_user(login_data: UserLoginModel, session=Depends(get_session)):
         
         if password_valid:
             
+            access_token = utils.create_access_token(
+                user_data={
+                    'email': user.email,
+                    'user_uid': str(user.uid)
+                }
+            )
             
+            refresh_token = utils.create_access_token(
+                user_data={
+                    'email': user.email,
+                    'user_uid': str(user.uid)
+                },
+                expiry_time=timedelta(days=2),
+                refresh=True
+            )
 
-            return {"message": "Login successful"}
+            return {"message": "Login successful",
+                    "user": user,
+                    "access_token": access_token,
+                    "refresh_token": refresh_token
+                    }
         
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid credentials")
     else:
