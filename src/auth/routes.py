@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException,status
+from fastapi.responses import JSONResponse
 from regex import F
 from src.auth.schemas import UserCreateModel, UserModel, UserLoginModel
 from src.auth.service import UserService
@@ -52,15 +53,22 @@ async def login_user(login_data: UserLoginModel, session=Depends(get_session)):
                 refresh=True
             )
 
-            return {"message": "Login successful",
-                    "user": user,
-                    "access_token": access_token,
-                    "refresh_token": refresh_token
+            return JSONResponse(
+                content={
+                    "message": "Login successful",
+                    'access_token': access_token,
+                    'refresh_token': refresh_token,
+                    'user_data': {
+                        'email': user.email,
+                        'user_uid': str(user.uid)
                     }
+                },
+                status_code=status.HTTP_200_OK
+            )
         
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid credentials")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     else:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid credentials")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     
         
    
