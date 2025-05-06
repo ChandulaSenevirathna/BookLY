@@ -4,15 +4,15 @@ from typing import List
 from src.books import schemas, service
 from src.db.main import get_session
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from src.auth.dependencies import AccessTokenBearer
 
 
 book_router = APIRouter()
-
 book_service = service.BookService()
+access_token_bearer = AccessTokenBearer()
 
 @book_router.get("", response_model=List[schemas.Book], status_code=status.HTTP_200_OK)
-async def get_books(session: AsyncSession = Depends(get_session)):
+async def get_books(session: AsyncSession = Depends(get_session), user_details = Depends(access_token_bearer)):
     
     books = await book_service.get_all_books(session)
     return books

@@ -6,9 +6,11 @@ from src.auth.service import UserService
 from src.db.main import get_session
 from src.auth import utils
 from datetime import timedelta
+from src.auth.dependencies import AccessTokenBearer
  
 auth_router = APIRouter()
 user_service = UserService()
+
 
 @auth_router.post("/signup", status_code=status.HTTP_201_CREATED, response_model=UserModel)
 async def create_user_account(user_data: UserCreateModel, session=Depends(get_session)):
