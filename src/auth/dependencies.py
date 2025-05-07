@@ -1,5 +1,14 @@
-from fastapi import HTTPException
+from email.policy import HTTP
+from fastapi import HTTPException, Request
 from fastapi.security import HTTPBearer
+from fastapi.security.http import HTTPAuthorizationCredentials
 
 class AccessTokenBearer(HTTPBearer):
-    pass
+    
+    def __init__(self, auto_error = True):
+        super().__init__(auto_error=auto_error)
+    
+    async def __call__(self, request: Request) -> HTTPAuthorizationCredentials | None:
+        creds = await super().__call__(request)
+        
+        print(creds.scheme, creds.credentials)
