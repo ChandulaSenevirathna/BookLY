@@ -17,18 +17,26 @@ class AccessTokenBearer(HTTPBearer):
         token = creds.credentials
         
         is_token_valid = self.token_valid(token)
+        print(is_token_valid)
+        
+        token_data = decode_token(token)
         
         if is_token_valid == False:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Invalid or expired token",
-                headers={"WWW-Authenticate": "Bearer"},
             )
-    
+        
+        if token_data["refresh"] == True:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Refresh token is not allowed",
+            )
+
     def token_valid(self, token: str):
-        
+
         token_data = decode_token(token)
-        
+
         if token_data is not None:
             return True
         else:

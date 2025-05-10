@@ -5,6 +5,8 @@ import jwt
 from src.config import config
 import uuid
 import logging
+from jwt.exceptions import DecodeError, ExpiredSignatureError, InvalidTokenError
+
 
 password_context = CryptContext(
     schemes=['bcrypt']
@@ -49,7 +51,7 @@ def create_access_token(user_data: dict, expiry_time: timedelta = None, refresh:
 
 def decode_token(token: str):
     """
-    Decode a JWT token.
+    Decode a JWT token safely.
     """
     try:
         payload = jwt.decode(
@@ -58,6 +60,14 @@ def decode_token(token: str):
             algorithms=config.JWT_ALGORITHM,
         )
         return payload
-    except jwt.PyJWKError as e:
-        logging.exception(e)
-        return None
+    except ExpiredSignatureError:
+        logging.warning("Token has expired.")
+    except DecodeError:
+        logging.warning("Failed to decode token: Invalid token format.")
+    except InvalidTokenError as e:
+        logging.warning(f"Invalid token: {e}")
+    except Exception as e:
+        logging.exception("Unexpected error decoding token")
+
+    return None
+    
