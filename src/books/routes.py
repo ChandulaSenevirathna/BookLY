@@ -18,14 +18,14 @@ async def get_books(session: AsyncSession = Depends(get_session), user_details =
     return books
 
 @book_router.post("", status_code=status.HTTP_201_CREATED, response_model=schemas.Book)
-async def create_a_book(book_data: schemas.BookCreateModel, session: AsyncSession = Depends(get_session)):
+async def create_a_book(book_data: schemas.BookCreateModel, session: AsyncSession = Depends(get_session), user_details = Depends(access_token_bearer)):
     
     # new_book_data = book_data.model_dump()
     new_book = await book_service.create_book(book_data, session)
     return new_book
 
 @book_router.get("/{book_uid}", response_model=schemas.Book, status_code=status.HTTP_200_OK)
-async def get_book(book_uid: str, session: AsyncSession = Depends(get_session)):
+async def get_book(book_uid: str, session: AsyncSession = Depends(get_session), user_details = Depends(access_token_bearer)):
     
     book = await book_service.get_book(book_uid, session)
     
@@ -46,7 +46,7 @@ async def get_book(book_uid: str, session: AsyncSession = Depends(get_session)):
 #     raise HTTPException(status_code=404, detail="Book not found")
 
 @book_router.patch("/{book_uid}")
-async def update_book(book_uid: str, book_data: schemas.BookUpdateModel, session: AsyncSession = Depends(get_session)):
+async def update_book(book_uid: str, book_data: schemas.BookUpdateModel, session: AsyncSession = Depends(get_session), user_details = Depends(access_token_bearer)):
  
     updated_book = await book_service.update_book(book_uid, book_data, session)
     
@@ -60,7 +60,7 @@ async def update_book(book_uid: str, book_data: schemas.BookUpdateModel, session
 
 
 @book_router.delete("/{book_uid}", status_code=status.HTTP_200_OK)
-async def delete_book(book_uid: str, session: AsyncSession = Depends(get_session)):
+async def delete_book(book_uid: str, session: AsyncSession = Depends(get_session), user_details = Depends(access_token_bearer)):
     
     deleted_book = await book_service.delete_book(book_uid, session)
     
