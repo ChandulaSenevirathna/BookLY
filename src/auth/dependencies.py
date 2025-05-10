@@ -32,6 +32,8 @@ class AccessTokenBearer(HTTPBearer):
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Refresh token is not allowed",
             )
+        
+        return token_data
 
     def token_valid(self, token: str):
 
