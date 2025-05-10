@@ -34,16 +34,6 @@ async def get_book(book_uid: str, session: AsyncSession = Depends(get_session), 
     else:  
         raise HTTPException(status_code=404, detail="Book not found")
 
-# @book_router.put("/{book_id}")
-# async def update_book(book_id: int, book_data: schemas.BookUpdateModel):
-#     for book in books:
-#         if book["id"] == book_id:
-#             book.update(book_data.model_dump())
-#             return {
-#                 "status": "success",
-#                 "record": book
-#                 }
-#     raise HTTPException(status_code=404, detail="Book not found")
 
 @book_router.patch("/{book_uid}")
 async def update_book(book_uid: str, book_data: schemas.BookUpdateModel, session: AsyncSession = Depends(get_session), user_details = Depends(access_token_bearer)):
