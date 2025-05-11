@@ -11,6 +11,7 @@ class TokenBearer(HTTPBearer):
     
     async def __call__(self, request: Request) -> HTTPAuthorizationCredentials | None:
         creds = await super().__call__(request)
+
         
         token = creds.credentials
         
