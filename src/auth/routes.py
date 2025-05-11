@@ -6,7 +6,7 @@ from src.auth.service import UserService
 from src.db.main import get_session
 from src.auth import utils
 from datetime import timedelta
-from src.auth.dependencies import AccessTokenBearer
+from src.auth.dependencies import AccessTokenBearer, RefreshTokenBearer
  
 auth_router = APIRouter()
 user_service = UserService()
@@ -72,5 +72,9 @@ async def login_user(login_data: UserLoginModel, session=Depends(get_session)):
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     
-        
-   
+@auth_router.get("/refresh_token")
+async def get_new_access_token(token_data: dict = Depends(RefreshTokenBearer)):
+    
+    print(token_data)
+    
+    return {}
