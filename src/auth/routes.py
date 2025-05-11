@@ -73,7 +73,7 @@ async def login_user(login_data: UserLoginModel, session=Depends(get_session)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     
 @auth_router.get("/refresh_token")
-async def get_new_access_token(token_data: dict = Depends(RefreshTokenBearer)):
+async def get_new_access_token(token_data: dict = Depends(RefreshTokenBearer())):
     
     print(token_data)
     
