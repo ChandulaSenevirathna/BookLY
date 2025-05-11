@@ -4,7 +4,7 @@ from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
 from src.auth.utils import decode_token
 
-class AccessTokenBearer(HTTPBearer):
+class TokenBearer(HTTPBearer):
     
     def __init__(self, auto_error = True):
         super().__init__(auto_error=auto_error)
@@ -17,7 +17,6 @@ class AccessTokenBearer(HTTPBearer):
         token = creds.credentials
         
         is_token_valid = self.token_valid(token)
-        print(is_token_valid)
         
         token_data = decode_token(token)
         
@@ -27,13 +26,13 @@ class AccessTokenBearer(HTTPBearer):
                 detail="Invalid or expired token",
             )
         
-        if token_data["refresh"] == True:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Refresh token is not allowed",
-            )
+        # if token_data["refresh"] == True:
+        #     raise HTTPException(
+        #         status_code=status.HTTP_403_FORBIDDEN,
+        #         detail="Refresh token is not allowed",
+        #     )
         
-        return token_data
+        return token_data  
 
     def token_valid(self, token: str):
 
@@ -43,4 +42,23 @@ class AccessTokenBearer(HTTPBearer):
             return True
         else:
             return False
+
+class AccessTokenBearer(TokenBearer):
+    
+    def verify_token_data(self, token_data):
         
+        if token_data is not None and token_data["refresh"] == True:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Refresh token is not allowed provide ",
+            )
+
+class RefreshTokenBearer(TokenBearer):
+    
+    def verify_token_data(self, token_data):
+        
+        if token_data is not None and token_data["refresh"] == False:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access token is not allowed",
+            )   
