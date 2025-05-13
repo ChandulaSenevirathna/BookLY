@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException,status
 from fastapi.responses import JSONResponse
 from regex import F
+from tomlkit import date
 from src.auth.schemas import UserCreateModel, UserModel, UserLoginModel
 from src.auth.service import UserService
 from src.db.main import get_session
 from src.auth import utils
-from datetime import timedelta
+from datetime import timedelta, datetime
 from src.auth.dependencies import AccessTokenBearer, RefreshTokenBearer
  
 auth_router = APIRouter()
@@ -73,8 +74,29 @@ async def login_user(login_data: UserLoginModel, session=Depends(get_session)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     
 @auth_router.get("/refresh_token")
-async def get_new_access_token(token_data: dict = Depends(RefreshTokenBearer())):
+async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer())):
     
-    print(token_data)
+    print(token_details)
+    
+    if datetime.fromtimestamp(token_details["exp"]) > datetime.now():
+        new_access_token = utils.create_access_token(
+            user_data=token_details["user_data"],
+        )
+    
+        return JSONResponse(
+            content={
+                "message": "New access token generated",
+                'access_token': new_access_token,
+                'user_data': {
+                    'email': token_details["user_data"]["email"],
+                    'user_uid': token_details["user_data"]["user_uid"]
+                }
+            },
+            status_code=status.HTTP_200_OK
+        )
+    
+    else:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or Token expired")
+            
     
     return {}

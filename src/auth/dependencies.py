@@ -16,8 +16,10 @@ class TokenBearer(HTTPBearer):
         token = creds.credentials
         
         is_token_valid = self.token_valid(token)
+        print(f"Token valid: {is_token_valid}")
         
         token_data = decode_token(token)
+        print(f"Token data: {token_data}")
         
         if is_token_valid == False:
             raise HTTPException(
