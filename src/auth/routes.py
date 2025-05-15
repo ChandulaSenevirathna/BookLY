@@ -8,6 +8,7 @@ from src.db.main import get_session
 from src.auth import utils
 from datetime import timedelta, datetime
 from src.auth.dependencies import AccessTokenBearer, RefreshTokenBearer
+from src.db.redis_client import add_jti_to_blocklist
  
 auth_router = APIRouter()
 user_service = UserService()
@@ -100,3 +101,17 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
             
     
     return {}
+
+@auth_router.get("/logout")
+async def revoke_token(token_details: dict = Depends(AccessTokenBearer())):
+    
+    print(token_details)
+    
+    jti = token_details["jti"]
+    await add_jti_to_blocklist(jti)
+    return JSONResponse(
+        content={
+            "message": "Token revoked successfully"
+        },
+        status_code=status.HTTP_200_OK
+    )
