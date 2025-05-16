@@ -111,7 +111,7 @@ async def revoke_token(token_details: dict = Depends(AccessTokenBearer())):
     await add_jti_to_blocklist(jti)
     return JSONResponse(
         content={
-            "message": "Token revoked successfully"
+            "message": "Logged out successfully"
         },
         status_code=status.HTTP_200_OK
     )
