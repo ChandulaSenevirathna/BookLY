@@ -52,7 +52,8 @@ async def login_user(login_data: UserLoginModel, session=Depends(get_session)):
             refresh_token = utils.create_access_token(
                 user_data={
                     'email': user.email,
-                    'user_uid': str(user.uid)
+                    'user_uid': str(user.uid),
+                    'role': user.role
                 },
                 expiry_time=timedelta(days=2),
                 refresh=True
@@ -65,7 +66,8 @@ async def login_user(login_data: UserLoginModel, session=Depends(get_session)):
                     'refresh_token': refresh_token,
                     'user_data': {
                         'email': user.email,
-                        'user_uid': str(user.uid)
+                        'user_uid': str(user.uid),
+                        'role': user.role
                     }
                 },
                 status_code=status.HTTP_200_OK
