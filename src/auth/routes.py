@@ -116,7 +116,7 @@ async def revoke_token(token_details: dict = Depends(AccessTokenBearer())):
         status_code=status.HTTP_200_OK
     )
     
-@auth_router.get("/current_user")
+@auth_router.get("/current_user", response_model=UserModel)
 async def get_current_user(current_user: dict = Depends(get_current_user)):
     
    return current_user
