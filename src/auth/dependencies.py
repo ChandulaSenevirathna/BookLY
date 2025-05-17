@@ -7,7 +7,8 @@ from src.db.redis_client import token_in_blocklist
 from src.db.main import get_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.auth.service import UserService
-
+from typing import List
+from src.auth.models import User
 
 user_service = UserService()
 
@@ -85,3 +86,18 @@ async def get_current_user(token_data: dict = Depends(AccessTokenBearer()), sess
     user = await user_service.get_user_by_email(user_email, session)
     
     return user
+
+class RoleChecker:
+    
+    def __init__(self, allowed_roles:List[str]):
+        
+        self.allowed_roles = allowed_roles
+        
+    def __call__(self, current_user: User = Depends(get_current_user)):
+        
+        if current_user.role in self.allowed_roles:
+            return True
+        raise HTTPException(
+            status_code = status.HTTP_403_FORBIDDEN,
+            details = "Operation not permited"
+        )
