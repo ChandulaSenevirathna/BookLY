@@ -13,7 +13,7 @@ from src.db.redis_client import add_jti_to_blocklist
  
 auth_router = APIRouter()
 user_service = UserService()
-role_checker = RoleChecker(["admin"])
+role_checker = RoleChecker(["admin", "user"])
 
 
 @auth_router.post("/signup", status_code=status.HTTP_201_CREATED, response_model=UserModel)
