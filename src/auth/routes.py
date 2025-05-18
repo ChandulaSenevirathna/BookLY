@@ -1,3 +1,4 @@
+from re import U
 from fastapi import APIRouter, Depends, HTTPException,status
 from fastapi.responses import JSONResponse
 from regex import F
@@ -7,11 +8,12 @@ from src.auth.service import UserService
 from src.db.main import get_session
 from src.auth import utils
 from datetime import timedelta, datetime
-from src.auth.dependencies import AccessTokenBearer, RefreshTokenBearer, get_current_user
+from src.auth.dependencies import AccessTokenBearer, RefreshTokenBearer, current_user, RoleChecker
 from src.db.redis_client import add_jti_to_blocklist
  
 auth_router = APIRouter()
 user_service = UserService()
+role_checker = RoleChecker(["admin"])
 
 
 @auth_router.post("/signup", status_code=status.HTTP_201_CREATED, response_model=UserModel)
@@ -119,7 +121,7 @@ async def revoke_token(token_details: dict = Depends(AccessTokenBearer())):
         status_code=status.HTTP_200_OK
     )
     
-@auth_router.get("/current_user", response_model=UserModel)
-async def get_current_user(current_user: dict = Depends(get_current_user)):
+@auth_router.get("/me", response_model=UserModel)
+async def get_current_user(current_user: dict = Depends(current_user), _: bool = Depends(role_checker)):
     
-   return current_user
+    return current_user

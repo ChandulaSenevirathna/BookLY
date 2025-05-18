@@ -79,7 +79,7 @@ class RefreshTokenBearer(TokenBearer):
                 detail="Access token is not allowed provide Refresh token",
             )   
             
-async def get_current_user(token_data: dict = Depends(AccessTokenBearer()), session: AsyncSession = Depends(get_session)):
+async def current_user(token_data: dict = Depends(AccessTokenBearer()), session: AsyncSession = Depends(get_session)):
     
     user_email = token_data["user_data"]["email"]
     
@@ -93,11 +93,11 @@ class RoleChecker:
         
         self.allowed_roles = allowed_roles
         
-    def __call__(self, current_user: User = Depends(get_current_user)):
+    def __call__(self, current_user: User = Depends(current_user)):
         
         if current_user.role in self.allowed_roles:
             return True
         raise HTTPException(
             status_code = status.HTTP_403_FORBIDDEN,
-            details = "Operation not permited"
+            detail = "Operation not permited"
         )
