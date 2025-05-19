@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from datetime import date
 import uuid
+from typing import Optional
 
 class Book(BaseModel):
     uid: uuid.UUID
