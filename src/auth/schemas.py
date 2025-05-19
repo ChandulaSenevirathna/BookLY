@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 import uuid
 from pydantic import BaseModel, Field
 
@@ -20,6 +21,7 @@ class UserModel(BaseModel):
     is_verified: bool
     created_at: datetime 
     updated_at: datetime
+    # books: List[]
 
 class UserLoginModel(BaseModel):
     email: str = Field(max_length=50)
