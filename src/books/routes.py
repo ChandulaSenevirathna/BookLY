@@ -13,7 +13,7 @@ access_token_bearer = AccessTokenBearer()
 role_checker = RoleChecker(["admin", "user"])
 
 @book_router.get("", response_model=List[schemas.Book], status_code=status.HTTP_200_OK)
-async def get_books(session: AsyncSession = Depends(get_session), user_details = Depends(AccessTokenBearer()),
+async def get_books(session: AsyncSession = Depends(get_session), token_details = Depends(AccessTokenBearer()),
                     _: bool = Depends(role_checker)):
     
     books = await book_service.get_all_books(session) 
@@ -21,7 +21,7 @@ async def get_books(session: AsyncSession = Depends(get_session), user_details =
 
 @book_router.post("", status_code=status.HTTP_201_CREATED, response_model=schemas.Book)
 async def create_a_book(book_data: schemas.BookCreateModel, session: AsyncSession = Depends(get_session), 
-                        user_details = Depends(AccessTokenBearer()), _: bool = Depends(role_checker)):
+                        token_details = Depends(AccessTokenBearer()), _: bool = Depends(role_checker)):
     
     # new_book_data = book_data.model_dump()
     new_book = await book_service.create_book(book_data, session)
@@ -29,7 +29,7 @@ async def create_a_book(book_data: schemas.BookCreateModel, session: AsyncSessio
 
 @book_router.get("/{book_uid}", response_model=schemas.Book, status_code=status.HTTP_200_OK)
 async def get_book(book_uid: str, session: AsyncSession = Depends(get_session), 
-                   user_details = Depends(AccessTokenBearer()), _: bool = Depends(role_checker)):
+                   token_details = Depends(AccessTokenBearer()), _: bool = Depends(role_checker)):
     
     book = await book_service.get_book(book_uid, session)
     
@@ -41,7 +41,7 @@ async def get_book(book_uid: str, session: AsyncSession = Depends(get_session),
 
 @book_router.patch("/{book_uid}")
 async def update_book(book_uid: str, book_data: schemas.BookUpdateModel, session: AsyncSession = Depends(get_session), 
-                      user_details = Depends(AccessTokenBearer()), _: bool = Depends(role_checker)):
+                      token_details = Depends(AccessTokenBearer()), _: bool = Depends(role_checker)):
  
     updated_book = await book_service.update_book(book_uid, book_data, session)
     
@@ -55,7 +55,7 @@ async def update_book(book_uid: str, book_data: schemas.BookUpdateModel, session
 
 
 @book_router.delete("/{book_uid}", status_code=status.HTTP_200_OK)
-async def delete_book(book_uid: str, session: AsyncSession = Depends(get_session), user_details = Depends(AccessTokenBearer()),
+async def delete_book(book_uid: str, session: AsyncSession = Depends(get_session), token_details = Depends(AccessTokenBearer()),
                       _: bool = Depends(role_checker)):
     
     deleted_book = await book_service.delete_book(book_uid, session)
