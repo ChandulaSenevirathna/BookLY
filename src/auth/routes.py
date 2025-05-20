@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException,status
 from fastapi.responses import JSONResponse
 from regex import F
 from tomlkit import date
-from src.auth.schemas import UserCreateModel, UserModel, UserLoginModel
+from src.auth.schemas import UserBooksModel, UserCreateModel, UserModel, UserLoginModel
 from src.auth.service import UserService
 from src.db.main import get_session
 from src.auth import utils
@@ -121,7 +121,7 @@ async def revoke_token(token_details: dict = Depends(AccessTokenBearer())):
         status_code=status.HTTP_200_OK
     )
     
-@auth_router.get("/me", response_model=UserModel)
+@auth_router.get("/me", response_model=UserBooksModel)
 async def get_current_user(current_user: dict = Depends(current_user), _: bool = Depends(role_checker)):
     
     return current_user
