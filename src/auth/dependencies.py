@@ -96,7 +96,6 @@ async def current_user_with_books(token_data: dict = Depends(AccessTokenBearer()
     user_uid = user.uid
     books = await user_service.user_created_books(user_uid, session)
 
-    
     return {
         "user": user,
         "books": books
