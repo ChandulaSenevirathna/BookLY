@@ -1,5 +1,6 @@
 from flask import session
 from src.auth.models import User
+from src.books.models import Book
 from src.auth import schemas, utils
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
@@ -35,4 +36,11 @@ class UserService:
         await session.commit()
         
         return new_user
+    
+    async def user_created_books(self, uid: str, session: AsyncSession):
+        statement = select(Book).where(Book.user_uid == uid)
+        result = await session.execute(statement)
+        books = result.scalars().all()
+        
+        return books
 

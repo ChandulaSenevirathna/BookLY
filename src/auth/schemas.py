@@ -24,7 +24,8 @@ class UserModel(BaseModel):
     updated_at: datetime
 
 
-class UserBooksModel(UserModel):
+class UserBooksModel(BaseModel):
+    user: UserModel
     books: List[Book]
 
 class UserLoginModel(BaseModel):

@@ -8,7 +8,7 @@ from src.auth.service import UserService
 from src.db.main import get_session
 from src.auth import utils
 from datetime import timedelta, datetime
-from src.auth.dependencies import AccessTokenBearer, RefreshTokenBearer, current_user, RoleChecker
+from src.auth.dependencies import AccessTokenBearer, RefreshTokenBearer, current_user, current_user_with_books, RoleChecker
 from src.db.redis_client import add_jti_to_blocklist
  
 auth_router = APIRouter()
@@ -121,7 +121,12 @@ async def revoke_token(token_details: dict = Depends(AccessTokenBearer())):
         status_code=status.HTTP_200_OK
     )
     
-@auth_router.get("/me", response_model=UserBooksModel)
+@auth_router.get("/me", response_model=UserModel)
 async def get_current_user(current_user: dict = Depends(current_user), _: bool = Depends(role_checker)):
+    
+    return current_user
+
+@auth_router.get("/me_with_books", response_model=UserBooksModel)
+async def get_current_user(current_user: dict = Depends(current_user_with_books), _: bool = Depends(role_checker)):
     
     return current_user

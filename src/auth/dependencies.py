@@ -23,10 +23,10 @@ class TokenBearer(HTTPBearer):
         token = creds.credentials
         
         is_token_valid = self.token_valid(token)
-        print(f"Token valid: {is_token_valid}")
+        # print(f"Token valid: {is_token_valid}")
         
         token_data = decode_token(token)
-        print(f"Token data: {token_data}")
+        # print(f"Token data: {token_data}")
         
         if is_token_valid == False:
             raise HTTPException(
@@ -86,6 +86,21 @@ async def current_user(token_data: dict = Depends(AccessTokenBearer()), session:
     user = await user_service.get_user_by_email(user_email, session)
     
     return user
+
+async def current_user_with_books(token_data: dict = Depends(AccessTokenBearer()), session: AsyncSession = Depends(get_session)):
+    
+    user_email = token_data["user_data"]["email"]
+    
+    user = await user_service.get_user_by_email(user_email, session)
+    
+    user_uid = user.uid
+    books = await user_service.user_created_books(user_uid, session)
+
+    
+    return {
+        "user": user,
+        "books": books
+    }
 
 class RoleChecker:
     
