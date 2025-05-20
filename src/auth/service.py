@@ -7,7 +7,6 @@ from sqlmodel import select
 class UserService:
     
     async def get_user(self, email: str, session: AsyncSession):
-        """Get user by email"""
         statement = select(User).where(User.email == email)
         result = await session.execute(statement)
         user = result.scalars().first()
@@ -15,7 +14,6 @@ class UserService:
 
     
     async def get_user_by_email(self, email: str, session: AsyncSession):
-        """get user  by email"""
         user = await self.get_user(email, session)
         if user is not None:
             return user
