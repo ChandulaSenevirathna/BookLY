@@ -8,7 +8,7 @@ from src.db.main import get_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.auth.service import UserService
 from typing import List
-from src.auth.models import User
+from src.db.models import User
 
 user_service = UserService()
 

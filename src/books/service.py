@@ -1,6 +1,6 @@
 from src.books.schemas import BookCreateModel, BookUpdateModel
 from sqlmodel import select, desc
-from src.books.models import Book
+from src.db.models import Book
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime
 
