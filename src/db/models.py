@@ -59,4 +59,20 @@ class Book(SQLModel, table=True):
     updated_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
     # user: Optional["models.User"] = Relationship(back_populates="books")
     
-    
+
+class Review(SQLModel, table=True):
+    __tablename__ = "reviews"
+    uid: uuid.UUID = Field(
+        sa_column=Column(
+            pg.UUID,
+            nullable=False,
+            primary_key=True,
+            default=uuid.uuid4
+        )
+    )
+    rating: int = Field(lte=5)
+    review: str
+    user_uid: Optional[uuid.UUID] = Field(foreign_key="users.uid")
+    book_uid: Optional[uuid.UUID] = Field(foreign_key="books.uid")
+    created_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
+    updated_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
