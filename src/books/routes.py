@@ -19,10 +19,12 @@ async def get_books(session: AsyncSession = Depends(get_session), token_details 
     books = await book_service.get_all_books(session) 
     return books
 
-@book_router.get("/user/{user_uid}", response_model=List[schemas.Book], status_code=status.HTTP_200_OK)
-async def get_user_book_submissions(user_uid:str, session: AsyncSession = Depends(get_session),
+@book_router.get("/user", response_model=List[schemas.Book], status_code=status.HTTP_200_OK,)
+async def get_user_book_submissions(session: AsyncSession = Depends(get_session),
                                     token_details = Depends(AccessTokenBearer()),
                                     _: bool = Depends(role_checker)):
+    
+    user_uid = token_details["user_data"]["user_uid"]
     
     books = await book_service.get_user_book_submissions(user_uid, session) 
     return books
