@@ -70,7 +70,7 @@ class Review(SQLModel, table=True):
             default=uuid.uuid4
         )
     )
-    rating: int = Field(lte=5)
+    rating: int = Field(le=5)
     review: str
     user_uid: Optional[uuid.UUID] = Field(foreign_key="users.uid")
     book_uid: Optional[uuid.UUID] = Field(foreign_key="books.uid")
